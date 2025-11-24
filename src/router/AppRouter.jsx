@@ -8,6 +8,8 @@ import RegisterPage from '../pages/RegisterPage';
 import CartPage from '../pages/CartPage';
 import CheckoutPage from '../pages/CheckoutPage';
 import CheckoutSuccessPage from '../pages/CheckoutSuccessPage';
+import ContactPage from '../pages/ContactPage';
+import CategoryPage from '../pages/CategoryPage';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
 import AdminProductsPage from '../pages/admin/AdminProductsPage';
 import AdminProductFormPage from '../pages/admin/AdminProductFormPage';
@@ -23,6 +25,8 @@ const AppRouter = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/categorias/:slug" element={<CategoryPage />} />
+          <Route path="/contacto" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           

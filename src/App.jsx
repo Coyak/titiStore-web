@@ -1,13 +1,16 @@
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { CategoryProvider } from './context/CategoryContext';
 import AppRouter from './router/AppRouter';
 
 function App() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <AppRouter />
-      </CartProvider>
+      <CategoryProvider>
+        <CartProvider>
+          <AppRouter />
+        </CartProvider>
+      </CategoryProvider>
     </AuthProvider>
   );
 }

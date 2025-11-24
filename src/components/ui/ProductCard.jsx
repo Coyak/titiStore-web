@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import formatCurrency from '../../utils/formatCurrency';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -18,7 +19,7 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-bold text-white truncate" title={product.name}>{product.name}</h3>
           <span className="bg-brand-orange/10 text-brand-orange text-xs font-bold px-2 py-1 rounded-full">
-            ${Number(product.price).toLocaleString('es-CL')}
+            {formatCurrency(product.price)}
           </span>
         </div>
         <p className="text-gray-400 text-sm mb-4 line-clamp-2 h-10">{product.shortDescription}</p>

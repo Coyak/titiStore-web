@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
       const data = await cartApi.getCart();
       setItems(data);
     } catch (error) {
-      console.error('Failed to fetch cart', error);
+      console.error('No se pudo cargar el carro', error);
     }
   };
 
@@ -36,7 +36,7 @@ export const CartProvider = ({ children }) => {
       await cartApi.addToCart(product.id, quantity);
       await fetchCart();
     } catch (error) {
-      console.error('Failed to add to cart', error);
+      console.error('No se pudo agregar al carro', error);
     }
   };
 
@@ -45,7 +45,7 @@ export const CartProvider = ({ children }) => {
       await cartApi.updateCartItem(productId, quantity);
       await fetchCart();
     } catch (error) {
-      console.error('Failed to update cart', error);
+      console.error('No se pudo actualizar el carro', error);
     }
   };
 
@@ -54,7 +54,7 @@ export const CartProvider = ({ children }) => {
       await cartApi.removeCartItem(productId);
       await fetchCart();
     } catch (error) {
-      console.error('Failed to remove from cart', error);
+      console.error('No se pudo eliminar del carro', error);
     }
   };
 
@@ -63,7 +63,7 @@ export const CartProvider = ({ children }) => {
       await cartApi.clearCart();
       setItems([]);
     } catch (error) {
-      console.error('Failed to clear cart', error);
+      console.error('No se pudo vaciar el carro', error);
     }
   };
 

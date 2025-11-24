@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
           const data = await authApi.getMe();
           setUser(data.user);
         } catch (error) {
-          console.error('Failed to load user', error);
+          console.error('No se pudo cargar el usuario', error);
           localStorage.removeItem('token');
         }
       }

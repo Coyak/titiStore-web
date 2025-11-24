@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProduct } from '../api/productApi';
 import { useCart } from '../context/CartContext';
+import formatCurrency from '../utils/formatCurrency';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const ProductDetailPage = () => {
         const data = await getProduct(id);
         setProduct(data);
       } catch (error) {
-        console.error('Failed to fetch product', error);
+        console.error('No se pudo cargar el producto', error);
         navigate('/');
       } finally {
         setLoading(false);
@@ -28,80 +29,73 @@ const ProductDetailPage = () => {
   }, [id, navigate]);
 
   const handleAddToCart = () => {
+    if (!product) return;
     addToCart(product, quantity);
     navigate('/cart');
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen text-brand-orange">Cargando producto...</div>;
-  if (!product) return null;
+  if (loading) {
+    return <div className="flex h-[60vh] items-center justify-center text-brand-orange text-lg">Cargando producto...</div>;
+  }
+
+  if (!product) {
+    return null;
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-fade-in">
-      <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-        {/* Image gallery */}
-        <div className="flex flex-col-reverse">
-          <div className="w-full aspect-w-1 aspect-h-1 bg-brand-dark rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3 border border-gray-800">
-            <img
-              src={product.imageUrl || "https://images.unsplash.com/photo-1511376768163-246c6b1d25e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
-              alt={product.name}
-              className="w-full h-full object-center object-cover hover:scale-105 transition-transform duration-500"
-            />
-          </div>
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="grid gap-12 lg:grid-cols-2">
+        <div className="rounded-3xl border border-gray-800 bg-brand-dark p-4">
+          <img
+            src={product.imageUrl || 'https://images.unsplash.com/photo-1511376768163-246c6b1d25e7?auto=format&fit=crop&w=800&q=80'}
+            alt={product.name}
+            className="h-full w-full rounded-2xl object-cover"
+          />
         </div>
 
-        {/* Product info */}
-        <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">{product.name}</h1>
-
-          <div className="mt-3">
-            <h2 className="sr-only">Información del producto</h2>
-            <p className="text-3xl text-brand-orange font-bold">${Number(product.price).toLocaleString('es-CL')}</p>
-          </div>
-
-          <div className="mt-6">
-            <h3 className="sr-only">Descripción</h3>
-            <div className="text-base text-gray-300 space-y-6">
-              <p>{product.shortDescription}</p>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <div className="flex items-center">
-              <h3 className="text-sm text-gray-400 font-medium mr-4">Stock:</h3>
-              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.stock > 0 ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
-                {product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}
+        <div className="flex flex-col justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-gray-500">{product.category?.name || 'Categoría'}</p>
+            <h1 className="mt-3 text-4xl font-extrabold text-white">{product.name}</h1>
+            <p className="mt-4 text-2xl font-bold text-brand-orange">{formatCurrency(product.price)}</p>
+            <p className="mt-6 text-gray-300 leading-relaxed">{product.shortDescription || 'Producto sin descripción detallada.'}</p>
+            <div className="mt-6 flex items-center space-x-3 text-sm">
+              <span className="rounded-full border border-gray-700 px-4 py-1 text-gray-300">
+                Stock: {product.stock > 0 ? `${product.stock} unidades` : 'Agotado'}
+              </span>
+              <span className="rounded-full border border-gray-700 px-4 py-1 text-gray-300">
+                Despacho en 48h hábiles
               </span>
             </div>
           </div>
 
-          <div className="mt-10 flex sm:flex-col1">
-            <div className="flex items-center mr-4">
-               <label htmlFor="quantity" className="sr-only">Cantidad</label>
-               <select
-                 id="quantity"
-                 name="quantity"
-                 value={quantity}
-                 onChange={(e) => setQuantity(Number(e.target.value))}
-                 className="max-w-full rounded-md border border-gray-700 py-1.5 text-base leading-5 font-medium text-white text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-brand-orange focus:border-brand-orange sm:text-sm bg-brand-dark"
-               >
-                 {[...Array(Math.min(10, product.stock)).keys()].map((i) => (
-                   <option key={i + 1} value={i + 1}>{i + 1}</option>
-                 ))}
-               </select>
-            </div>
-
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <label className="text-sm font-semibold text-gray-400" htmlFor="quantity">
+              Cantidad
+            </label>
+            <select
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="rounded-2xl border border-gray-700 bg-brand-dark px-4 py-3 text-white focus:border-brand-orange focus:outline-none focus:ring-1 focus:ring-brand-orange"
+            >
+              {[...Array(Math.min(10, Math.max(product.stock, 1))).keys()].map((i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
+            </select>
             <button
-              type="button"
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="max-w-xs flex-1 bg-brand-orange border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-brand-orange-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-brand-orange sm:w-full disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-orange/20 transition-all"
+              className="flex-1 rounded-2xl bg-brand-orange px-6 py-3 text-base font-semibold text-white shadow-lg shadow-brand-orange/30 transition hover:bg-brand-orange-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {product.stock > 0 ? 'Agregar al Carro' : 'Agotado'}
+              {product.stock > 0 ? 'Agregar al carro' : 'Sin stock'}
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
