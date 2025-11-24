@@ -1,16 +1,66 @@
-# React + Vite
+# titiStore Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación React (Vite + TailwindCSS) que consume la API de titiStore y entrega la experiencia de e‑commerce y panel admin. Este repositorio está pensado para trabajar de forma aislada del backend.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js ≥ 20
+- npm ≥ 10
 
-## React Compiler
+## Scripts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Comando | Descripción |
+|---------|-------------|
+| `npm install` | Instala dependencias. |
+| `npm run dev` | Levanta Vite en modo desarrollo (por defecto `http://localhost:5173`). |
+| `npm run build` | Genera artefactos estáticos en `dist/`. |
+| `npm run preview` | Sirve el build para verificación local. |
 
-## Expanding the ESLint configuration
+## Variables de entorno
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Crear `.env` (o `.env.local`) con:
+
+```
+VITE_API_URL=http://localhost:3000/api
+```
+
+## Estructura principal
+
+```
+src/
+├── api/             # Clientes Axios (auth, products, cart, orders, etc.)
+├── assets/          # Imágenes / fuentes compartidas
+├── components/
+│   ├── layout/      # Navbar, Footer y contenedores comunes
+│   └── ui/          # Componentes reutilizables (ProductCard, etc.)
+├── context/         # Providers (AuthContext, CartContext, CategoryContext)
+├── pages/           # Vistas (Home, Login, Checkout, Admin/*)
+├── router/          # Configuración de rutas, Private/Admin routes
+├── styles/          # Estilos base adicionales a Tailwind
+├── App.jsx          # Monta providers y router
+├── main.jsx         # Entrypoint de React
+└── utils/           # Helpers como `formatCurrency`
+```
+
+### Carpetas destacadas
+
+- `pages/`: cada pantalla (público, flujo de compra y páginas administrativas). `pages/admin/` contiene dashboard, productos y pedidos.
+- `context/`: maneja el estado global (autenticación, carro, categorías) y comunicación con los API clients.
+- `api/`: wrappers sobre Axios que centralizan el `baseURL` y el token JWT (mediante interceptor).
+- `components/layout/`: incluye Navbar con menú dinámico de categorías y Footer con enlaces útiles.
+- `router/`: define rutas públicas, privadas y admin usando `react-router-dom`.
+
+## Flujo de desarrollo
+
+1. Configura `VITE_API_URL`.
+2. `npm install`
+3. `npm run dev` y abre la URL indicada por Vite.
+4. Usa `npm run build` + `npm run preview` para validar el build antes de desplegar.
+
+## Deploy
+
+El proyecto incluye un `Dockerfile` y `nginx.conf` listos para generar un contenedor estático. También puedes desplegar el `dist/` en cualquier CDN/hosting estático.
+
+---
+
+Mantenedores: equipo frontend titiStore.
