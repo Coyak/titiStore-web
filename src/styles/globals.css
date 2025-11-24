@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-brand-darker text-gray-100 antialiased;
+}
+
+#root {
+  @apply flex flex-col min-h-screen;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-brand-darker;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
+/* Form Elements Base Styles */
+input, select, textarea {
+  @apply bg-brand-dark border-gray-700 text-white focus:ring-brand-orange focus:border-brand-orange;
+}
